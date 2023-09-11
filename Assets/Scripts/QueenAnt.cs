@@ -16,12 +16,18 @@ public class QueenAnt : AbstractAnt
     {
     }
 
+    protected override void Start()
+    {
+        base.Start();
+        nextAntDueTime = Time.time + 20;
+    }
+
     protected override void Move()
     {
         if(antsMadeHere >= TooManyBabyAnts)
         {
             // Pick a random target and move to it
-            var sites = GameObject.FindGameObjectsWithTag("QueennSites");
+            var sites = GameObject.FindGameObjectsWithTag("QueenSites");
             var index = Random.Range(0, sites.Length);
             Target = sites[index].transform.position;
 
@@ -31,7 +37,7 @@ public class QueenAnt : AbstractAnt
 
     protected override void Work()
     {
-        if (IsMoving)
+        if (!IsMoving)
         {
             if (HungerLevel == 0)
             {
@@ -44,6 +50,7 @@ public class QueenAnt : AbstractAnt
                     {
                         Eat();
                     }
+                    nextAntDueTime = Time.time + 20;
                 }
             }
             else if (HungerLevel == 1)
