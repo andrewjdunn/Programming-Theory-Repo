@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class QueenAnt : AbstractAnt
 {
-    private static readonly int TooManyBabyAnts = 20;
+    private static readonly int TooManyBabyAnts = 5;
+    private GameObject antParent;
     private float nextAntDueTime = float.MaxValue;
     private int antsMadeHere = 0;
 
@@ -14,12 +16,14 @@ public class QueenAnt : AbstractAnt
 
     public QueenAnt()
     {
+        
     }
 
     protected override void Start()
     {
         base.Start();
-        nextAntDueTime = Time.time + 20;
+        antParent = GameObject.Find("Ants");
+        nextAntDueTime = Time.time + 20; // Magic number..
     }
 
     protected override void Move()
@@ -27,7 +31,7 @@ public class QueenAnt : AbstractAnt
         if(antsMadeHere >= TooManyBabyAnts)
         {
             // Pick a random target and move to it
-            var sites = GameObject.FindGameObjectsWithTag("QueenSites");
+            var sites = GameObject.FindGameObjectsWithTag("QueenArea");
             var index = Random.Range(0, sites.Length);
             Target = sites[index].transform.position;
 
@@ -44,7 +48,14 @@ public class QueenAnt : AbstractAnt
                 if (nextAntDueTime < Time.time)
                 {
                     var prefab = GetRandomBabyAntPrefab();
-                    Instantiate(prefab);
+                    var x = Random.Range(0, 5) + 5;
+                    var y = Random.Range(0, 5) + 5;
+                    var xOffset = Random.value > 0.5 ? +x : -x;
+                    var yOffset = Random.value > 0.5 ? +y : -y;
+                    // Clip to floor bounds (99?)
+
+                    var position = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + yOffset);
+                    Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
                     ++antsMadeHere;
                     if (HungerLevel > .5)
                     {
