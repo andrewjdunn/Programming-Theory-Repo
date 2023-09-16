@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - QueenArea
+  - Rock
+  - Food
   layers:
   - Default
   - TransparentFX
