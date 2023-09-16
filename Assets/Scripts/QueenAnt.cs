@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Video;
 
-public class QueenAnt : AbstractAnt
+public class QueenAnt : AbstractAnt // INHERITANCE
 {
+    private static readonly float HungerIncreaseForNewAnt = 0.2f;
     private static readonly int TooManyBabyAnts = 5;
     private GameObject antParent;
     private float nextAntDueTime = float.MaxValue;
@@ -13,6 +13,7 @@ public class QueenAnt : AbstractAnt
     public GameObject diggerPrefab;
     public GameObject fighterPrefab;
     public GameObject farmerPrefab;
+    public GameObject foodPrefab;
 
     public QueenAnt()
     {
@@ -43,7 +44,7 @@ public class QueenAnt : AbstractAnt
     {
         if (!IsMoving)
         {
-            if (HungerLevel == 0)
+            if (HungerLevel < 1)
             {
                 if (nextAntDueTime < Time.time)
                 {
@@ -52,11 +53,17 @@ public class QueenAnt : AbstractAnt
                     var y = Random.Range(0, 5) + 5;
                     var xOffset = Random.value > 0.5 ? +x : -x;
                     var yOffset = Random.value > 0.5 ? +y : -y;
-                    // Clip to floor bounds (99?)
-
+                    
                     var position = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + yOffset);
-                    Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
+                    var newAnt = Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
+                    // TODO: Scruffy - we can already know what the type is..
+                    var diggerAntScript = newAnt.GetComponent<DiggerAnt>();
+                    if(diggerAntScript != null)
+                    {
+                        diggerAntScript.SetFoodPrefab(foodPrefab);
+                    }
                     ++antsMadeHere;
+                    IncreaseHunger(HungerIncreaseForNewAnt);
                     if (HungerLevel > .5)
                     {
                         Eat();
@@ -64,7 +71,7 @@ public class QueenAnt : AbstractAnt
                     nextAntDueTime = Time.time + 20;
                 }
             }
-            else if (HungerLevel == 1)
+            else
             {
                 Eat();
             }

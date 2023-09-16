@@ -9,6 +9,7 @@ public abstract class AbstractAnt : MonoBehaviour
 
     private static readonly float foodBenifit = 0.25f;
     private static readonly float maxFoodDistance = 2.5f;
+    private static readonly float closeEnough = 1.6f;
 
     private NavMeshAgent navAgent;
 
@@ -22,6 +23,19 @@ public abstract class AbstractAnt : MonoBehaviour
     protected bool IsMoving { get; }
 
     protected Vector3 Target { set { navAgent.SetDestination(value); } }
+
+    protected bool CloseToTarget 
+    { 
+        get 
+        {
+            var reached = !navAgent.pathPending && navAgent.destination != null && navAgent.remainingDistance < closeEnough;
+            if(reached)
+            {
+                Debug.Log($"Distance to Target {navAgent.remainingDistance} Target {navAgent.destination} Position {transform.position}");
+            }
+            return reached;
+        } 
+    }
 
     
     // ABSTRACTION - Called by subclasses to reduce hunger
