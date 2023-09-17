@@ -9,7 +9,6 @@ public class QueenAnt : AbstractAnt // INHERITANCE
     private int antsMadeHere = 0;
 
     [SerializeField] private GameObject diggerPrefab;
-    [SerializeField] private GameObject fighterPrefab;
     [SerializeField] private GameObject farmerPrefab;
     [SerializeField] private GameObject foodPrefab;
     [SerializeField] private GameObject soilPrefab;
@@ -82,17 +81,11 @@ public class QueenAnt : AbstractAnt // INHERITANCE
     private GameObject GetRandomBabyAntPrefab()
     {
         float diggerChance = OptionsManager.Instance.Options.DiggerRatio * Random.value;
-        float fighterChance = OptionsManager.Instance.Options.FighterRatio * Random.value;
         float farmerChance = OptionsManager.Instance.Options.FarmerRatio * Random.value;
-        if(diggerChance > fighterChance && diggerChance > farmerChance)
+        if(diggerChance > farmerChance)
         {
             return diggerPrefab;
-        }
-
-        if(fighterChance > farmerChance)
-        {
-            return fighterPrefab;
-        }
+        }        
 
         return farmerPrefab;
     }
