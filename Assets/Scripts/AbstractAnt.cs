@@ -6,12 +6,12 @@ using UnityEngine.AI;
 
 public abstract class AbstractAnt : MonoBehaviour
 {
-
-    private static readonly float foodBenefit = 0.1f;
+    private static readonly float foodBenefit = 0.45f;
     private static readonly float closeEnough = 1.6f;
 
     private NavMeshAgent navAgent;
 
+    // Encapsulation
     [SerializeField]
     private float hungerLevel = 0;
     

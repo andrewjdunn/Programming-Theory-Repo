@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class QueenAnt : AbstractAnt // INHERITANCE
 {
+    private const int TimeForNextAnt = 20;
     private static readonly float HungerIncreaseForNewAnt = 0.2f;
     private static readonly int TooManyBabyAnts = 5;
     private GameObject antParent;
@@ -13,23 +15,17 @@ public class QueenAnt : AbstractAnt // INHERITANCE
     [SerializeField] private GameObject foodPrefab;
     [SerializeField] private GameObject soilPrefab;
 
-    public QueenAnt()
-    {
-        
-    }
-
     protected override void Start()
     {
         base.Start();
         antParent = GameObject.Find("Ants");
-        nextAntDueTime = Time.time + 20; // Magic number..
+        nextAntDueTime = Time.time + TimeForNextAnt;
     }
 
     protected override void Move()
     {
         if(antsMadeHere >= TooManyBabyAnts)
         {
-            // Pick a random target and move to it
             var sites = GameObject.FindGameObjectsWithTag("QueenArea");
             var index = Random.Range(0, sites.Length);
             Target = sites[index].transform.position;
@@ -44,26 +40,7 @@ public class QueenAnt : AbstractAnt // INHERITANCE
         {
             if (nextAntDueTime < Time.time)
             {
-                var prefab = GetRandomBabyAntPrefab();
-                var x = Random.Range(0, 5) + 5;
-                var y = Random.Range(0, 5) + 5;
-                var xOffset = Random.value > 0.5 ? +x : -x;
-                var yOffset = Random.value > 0.5 ? +y : -y;
-                    
-                var position = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + yOffset);
-                var newAnt = Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
-                // TODO: Scruffy - we can already know what the type is..
-                var diggerAntScript = newAnt.GetComponent<DiggerAnt>();
-                if(diggerAntScript != null)
-                {
-                    diggerAntScript.SetSoilPrefab(soilPrefab);
-                }
-                var farmerAntScript = newAnt.GetComponent<FarmerAnt>();
-                if (farmerAntScript != null)
-                {
-                    farmerAntScript.FoodPrefab = foodPrefab;
-                }
-                    
+                MakeRandomNewAnt();
                 ++antsMadeHere;
                     
                 IncreaseHunger(HungerIncreaseForNewAnt);
@@ -74,19 +51,50 @@ public class QueenAnt : AbstractAnt // INHERITANCE
                 }
                 nextAntDueTime = Time.time + 20;
             }
-            
         }
     }
 
-    private GameObject GetRandomBabyAntPrefab()
+    private void MakeRandomNewAnt()
     {
         float diggerChance = OptionsManager.Instance.Options.DiggerRatio * Random.value;
         float farmerChance = OptionsManager.Instance.Options.FarmerRatio * Random.value;
-        if(diggerChance > farmerChance)
+        GameObject prefab;
+        if (diggerChance > farmerChance)
         {
-            return diggerPrefab;
-        }        
+            prefab = diggerPrefab;
+        }
+        else
+        {
+            prefab = farmerPrefab;
+        }
 
-        return farmerPrefab;
+        Vector3 position = CreateRandomePosition();
+
+        var newAnt = Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
+
+        if (diggerChance > farmerChance)
+        {
+            var diggerAntScript = newAnt.GetComponent<DiggerAnt>();
+            diggerAntScript.SetSoilPrefab(soilPrefab);
+        }
+        else
+        {
+            var farmerAntScript = newAnt.GetComponent<FarmerAnt>();
+            if (farmerAntScript != null)
+            {
+                farmerAntScript.FoodPrefab = foodPrefab;
+            }
+        }
+    }
+
+    private Vector3 CreateRandomePosition()
+    {
+        var x = Random.Range(0, 5) + 5;
+        var y = Random.Range(0, 5) + 5;
+        var xOffset = Random.value > 0.5 ? +x : -x;
+        var yOffset = Random.value > 0.5 ? +y : -y;
+
+        var position = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + yOffset);
+        return position;
     }
 }

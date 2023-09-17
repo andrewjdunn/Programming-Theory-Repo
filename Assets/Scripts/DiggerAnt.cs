@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+// Inheritance
 public class DiggerAnt : AbstractAnt
 {
     private static readonly float HungerIncreaseForBreakingRock = 0.15f;
