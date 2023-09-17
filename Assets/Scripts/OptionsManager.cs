@@ -11,14 +11,11 @@ public class OptionsManager : MonoBehaviour
     public class OptionsData
     {
         public float DiggerRatio;
-        public float FighterRatio;
         public float FarmerRatio;
     }
 
     [SerializeField]
     private GameObject DiggerSlider;
-    [SerializeField]
-    private GameObject FighterSlider;
     [SerializeField]
     private GameObject FarmerSlider;
 
