@@ -1,19 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class QueenAnt : AbstractAnt
+public class QueenAnt : AbstractAnt // INHERITANCE
 {
-    private static readonly int TooManyBabyAnts = 20;
+    private static readonly float HungerIncreaseForNewAnt = 0.2f;
+    private static readonly int TooManyBabyAnts = 5;
+    private GameObject antParent;
     private float nextAntDueTime = float.MaxValue;
     private int antsMadeHere = 0;
 
-    public GameObject diggerPrefab;
-    public GameObject fighterPrefab;
-    public GameObject farmerPrefab;
+    [SerializeField] private GameObject diggerPrefab;
+    [SerializeField] private GameObject fighterPrefab;
+    [SerializeField] private GameObject farmerPrefab;
+    [SerializeField] private GameObject foodPrefab;
+    [SerializeField] private GameObject soilPrefab;
 
     public QueenAnt()
     {
+        
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        antParent = GameObject.Find("Ants");
+        nextAntDueTime = Time.time + 20; // Magic number..
     }
 
     protected override void Move()
@@ -21,7 +31,7 @@ public class QueenAnt : AbstractAnt
         if(antsMadeHere >= TooManyBabyAnts)
         {
             // Pick a random target and move to it
-            var sites = GameObject.FindGameObjectsWithTag("QueennSites");
+            var sites = GameObject.FindGameObjectsWithTag("QueenArea");
             var index = Random.Range(0, sites.Length);
             Target = sites[index].transform.position;
 
@@ -31,25 +41,41 @@ public class QueenAnt : AbstractAnt
 
     protected override void Work()
     {
-        if (IsMoving)
+        if (!IsMoving)
         {
-            if (HungerLevel == 0)
+            if (nextAntDueTime < Time.time)
             {
-                if (nextAntDueTime < Time.time)
+                var prefab = GetRandomBabyAntPrefab();
+                var x = Random.Range(0, 5) + 5;
+                var y = Random.Range(0, 5) + 5;
+                var xOffset = Random.value > 0.5 ? +x : -x;
+                var yOffset = Random.value > 0.5 ? +y : -y;
+                    
+                var position = new Vector3(transform.position.x + xOffset, transform.position.y, transform.position.z + yOffset);
+                var newAnt = Instantiate(prefab, position, prefab.transform.rotation, antParent.transform);
+                // TODO: Scruffy - we can already know what the type is..
+                var diggerAntScript = newAnt.GetComponent<DiggerAnt>();
+                if(diggerAntScript != null)
                 {
-                    var prefab = GetRandomBabyAntPrefab();
-                    Instantiate(prefab);
-                    ++antsMadeHere;
-                    if (HungerLevel > .5)
-                    {
-                        Eat();
-                    }
+                    diggerAntScript.SetSoilPrefab(soilPrefab);
                 }
+                var farmerAntScript = newAnt.GetComponent<FarmerAnt>();
+                if (farmerAntScript != null)
+                {
+                    farmerAntScript.FoodPrefab = foodPrefab;
+                }
+                    
+                ++antsMadeHere;
+                    
+                IncreaseHunger(HungerIncreaseForNewAnt);
+                    
+                if (HungerLevel > .5)
+                {
+                    Eat();
+                }
+                nextAntDueTime = Time.time + 20;
             }
-            else if (HungerLevel == 1)
-            {
-                Eat();
-            }
+            
         }
     }
 
