@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class QueenAnt : AbstractAnt // INHERITANCE
 {
+    private const int TimeForNextAnt = 20;
     private static readonly float HungerIncreaseForNewAnt = 0.2f;
     private static readonly int TooManyBabyAnts = 5;
     private GameObject antParent;
@@ -13,23 +15,17 @@ public class QueenAnt : AbstractAnt // INHERITANCE
     [SerializeField] private GameObject foodPrefab;
     [SerializeField] private GameObject soilPrefab;
 
-    public QueenAnt()
-    {
-        
-    }
-
     protected override void Start()
     {
         base.Start();
         antParent = GameObject.Find("Ants");
-        nextAntDueTime = Time.time + 20; // Magic number..
+        nextAntDueTime = Time.time + TimeForNextAnt;
     }
 
     protected override void Move()
     {
         if(antsMadeHere >= TooManyBabyAnts)
         {
-            // Pick a random target and move to it
             var sites = GameObject.FindGameObjectsWithTag("QueenArea");
             var index = Random.Range(0, sites.Length);
             Target = sites[index].transform.position;
