@@ -7,15 +7,14 @@ using UnityEngine.AI;
 public abstract class AbstractAnt : MonoBehaviour
 {
 
-    private static readonly float foodBenifit = 0.25f;
-    private static readonly float maxFoodDistance = 2.5f;
+    private static readonly float foodBenefit = 0.1f;
     private static readonly float closeEnough = 1.6f;
 
     private NavMeshAgent navAgent;
 
-    // Huger level increase from 0 to 1 for each activity over time, - at 1 we want to eat eating makes hunger go down by 0.25f.
+    [SerializeField]
     private float hungerLevel = 0;
-
+    
     protected abstract void Move();
     protected abstract void Work();
 
@@ -38,20 +37,26 @@ public abstract class AbstractAnt : MonoBehaviour
     }
 
     
-    // ABSTRACTION - Called by subclasses to reduce hunger
+    // ABSTRACTION
     protected void Eat()
     {
-        // Look for things tagged with Food.
         var allFood = GameObject.FindGameObjectsWithTag("Food");
+        GameObject nearestFood = null;
+        float nearestFoodDistance = float.MaxValue;
         foreach (var food in allFood)
         {
-            var distance = food.transform.position - gameObject.transform.position;
-            if(distance.magnitude < maxFoodDistance)
+            var distance = (food.transform.position - gameObject.transform.position).magnitude;
+            if(distance < nearestFoodDistance)
             {
-                Destroy(food);
-                hungerLevel -= foodBenifit;
-                break;
+                nearestFoodDistance = distance;
+                nearestFood = food;
             }
+        }
+
+        if(nearestFood != null)
+        {
+            Destroy(nearestFood);
+            hungerLevel -= foodBenefit;
         }
     }
 
@@ -76,7 +81,13 @@ public abstract class AbstractAnt : MonoBehaviour
         // Sub classes will decide if they want to move and if not already done so set the nav mesh props
         Move();
 
-        // SUb classes decide if they need and can work and do the work
-        Work();
+        if (HungerLevel < 1)
+        {
+            Work();
+        }
+        else
+        {
+            Eat();
+        }
     }
 }

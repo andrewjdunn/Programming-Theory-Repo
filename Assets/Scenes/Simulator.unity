@@ -1634,7 +1634,8 @@ MonoBehaviour:
   diggerPrefab: {fileID: 5358398326751477404, guid: 31fb2fa9ee1d8754e8919ff212ead847, type: 3}
   fighterPrefab: {fileID: 7323841683059529452, guid: 6142fca3cf84e7c45abf4a6b12951740, type: 3}
   farmerPrefab: {fileID: 948850348709774756, guid: b74a4f2a1f8188c4481f72c59dcc4b02, type: 3}
-  foodPrefab: {fileID: 5826133204063283219, guid: a271015cff61cf04eaac1d3980013d15, type: 3}
+  foodPrefab: {fileID: 7679584413740262448, guid: 93cefdb2a33f94b479fcb6a13d97942f, type: 3}
+  soilPrefab: {fileID: 5826133204063283219, guid: a271015cff61cf04eaac1d3980013d15, type: 3}
 --- !u!1 &1882656334
 GameObject:
   m_ObjectHideFlags: 0
@@ -1743,7 +1744,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2089784412}
   m_Layer: 0
-  m_Name: Soil
+  m_Name: Soils
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

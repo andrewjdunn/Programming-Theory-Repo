@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 948850348709774783}
   - component: {fileID: 948850348709774776}
   - component: {fileID: 948850348709774777}
-  - component: {fileID: 948850348709774778}
   - component: {fileID: -5184868254517939273}
+  - component: {fileID: -7484918989707053748}
   m_Layer: 0
   m_Name: Farmer
   m_TagString: Untagged
@@ -99,18 +99,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &948850348709774778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 948850348709774756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 429a504a9fa4e424fa3df2d237ef2a13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!195 &-5184868254517939273
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -133,3 +121,15 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &-7484918989707053748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948850348709774756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ece5d2b3ed78894d9e3003ad8fe6640, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

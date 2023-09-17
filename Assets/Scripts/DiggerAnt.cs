@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class DiggerAnt : AbstractAnt
 {
+    private static readonly float HungerIncreaseForBreakingRock = 0.15f;
     private static int TimeToDestroyRock = 7;
     private GameObject workRock;
     private bool workingOnrock;
-    private GameObject foodPrefab;
-    private GameObject foodParent;
+    private GameObject soilPrefab;
+    private GameObject soilParent;
 
     // Start is called before the first frame update
     protected override void Start()
     {
         base.Start();
-        foodParent = GameObject.Find("Foods");
+        soilParent = GameObject.Find("Soils");
     }
 
-    public void SetFoodPrefab(GameObject foodPrefab)
+    public void SetSoilPrefab(GameObject soilPrefab)
     {
-        Debug.Log("Setting food prefab to " + foodPrefab);
-        this.foodPrefab = foodPrefab;
+        this.soilPrefab = soilPrefab;
     }
 
     protected override void Move()
@@ -52,7 +52,6 @@ public class DiggerAnt : AbstractAnt
     {
         if(!workingOnrock && workRock != null && CloseToTarget)
         {
-            Debug.Log("Reached the rock!");
             workingOnrock = true;
             StartCoroutine(DestroyTheWorkRock());
         }
@@ -63,13 +62,12 @@ public class DiggerAnt : AbstractAnt
         yield return new WaitForSeconds(TimeToDestroyRock);
         if(workRock != null)
         {
-            Debug.Log("Destroying the Rock");
             var rockPosition = workRock.transform.position;
             Destroy(workRock);
             workingOnrock = false;
-            var foodPosition = new Vector3(rockPosition.x, foodPrefab.transform.position.y, rockPosition.z);
-            Instantiate(foodPrefab, foodPosition, foodPrefab.transform.rotation, foodParent.transform);
-            
+            var soilPosition = new Vector3(rockPosition.x, soilPrefab.transform.position.y, rockPosition.z);
+            Instantiate(soilPrefab, soilPosition, soilPrefab.transform.rotation, soilParent.transform);
+            IncreaseHunger(HungerIncreaseForBreakingRock);
         }
     }
 
